@@ -1,6 +1,5 @@
 "use server"
-import { log } from 'console';
-import { YoutubeTranscript,YoutubeTranscriptNotAvailableLanguageError } from 'youtube-transcript';
+import { YoutubeTranscript } from 'youtube-transcript';
 import he from 'he';
 export default async function getTranscript( videoUrl: string) {
     try {
@@ -11,6 +10,7 @@ export default async function getTranscript( videoUrl: string) {
       }
       return he.decode(he.decode(resultTrnaskirpt));
     } catch (error) {
+      console.error("Error fetching transcript:", error);
       return "Error fetching transcript";
     }
 }

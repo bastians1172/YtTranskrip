@@ -1,8 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import getTranscript from "./getTranscript";
-import { main } from "./(utils)/groqApi/transplate";
+import { AiTranslate } from "./(utils)/groqApi/transplate";
 import LanguageSelect from "./language";
+// import { time } from "console";
+// import translate from "translate";
 
 // Fungsi untuk mengecek apakah URL valid
 function checkUrl(url: string): boolean {
@@ -17,19 +19,16 @@ function extractVideoId(url: string): string | null {
   return match && match[1] ? match[1] : null;
 }
 
-// Fungsi untuk memformat waktu (dalam detik) ke format mm:ss
-function formatTime(seconds: number): string {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
-}
+
 
 export default function Home() {
   const [url, setUrl] = useState("");
+  const [originalTranscript, setOriginalTranscript] = useState("");
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("en"); // Default bahasa Inggris
 
+  // Fungsi untuk mengambil transkrip dari URL YouTube
   const handleGetTranscript = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -41,7 +40,8 @@ export default function Home() {
     setLoading(true);
     try {
       const data = await getTranscript(url);
-      setResult(data);
+      setOriginalTranscript(data); // Simpan transkrip asli
+      setResult(data); // Tampilkan transkrip asli terlebih dahulu
     } catch (error) {
       console.error("Error fetching transcript:", error);
       setResult("Error fetching transcript");
@@ -49,6 +49,20 @@ export default function Home() {
       setLoading(false);
     }
   };
+
+  const handleTranslate = async () => {
+
+    setResult("Translate...");
+    try {
+      const translatedText = await AiTranslate(originalTranscript, selectedLanguage);
+      setResult(translatedText);
+    } catch (error) {
+      console.error("Error translating transcript:", error);
+      setResult("Error translating transcript");
+    } 
+  }
+
+
   const videoId = extractVideoId(url);
 
   return (
@@ -77,8 +91,10 @@ export default function Home() {
                 disabled:border-[#BCC1CAFF] disabled:text-[#BCC1CAFF]
                 outline-none"
             value={url}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setUrl(e.target.value)
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{
+              setUrl(e.target.value);
+              
+            }
             }
             required
           />
@@ -90,30 +106,38 @@ export default function Home() {
         </form>
       </div>
 
-      <div className="mt-5 flex flex-row  w-120 border-2 border-amber-500 rounded-lg p-4 gap-2">
+      <div className="mt-5 flex flex-row w-120 border-2 border-amber-500 rounded-lg p-4 gap-2">
         {loading ? (
           <p>Loading...</p>
         ) : (
-      <div className="flex flex-col items-center gap-2">
-        {result ? (
-          <>
-            <iframe
-            className="w-full h-[315px] rounded-lg"
-              src={`https://www.youtube.com/embed/${videoId}`}
-              title="YouTube video player"
-              frameBorder="0"
-              // allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            />
-            <div>
-            <LanguageSelect value={selectedLanguage} onValueChange={setSelectedLanguage} />
-
-            </div>
-            <p>{result}</p>
-          </>
-        ) : (
-          <p>No transcript yet</p>
-        )}
-      </div>
+          <div className="flex flex-col items-center gap-2 justify-center w-full">
+            {result ? (
+              <>
+                <iframe
+                  className="w-full h-[315px] rounded-lg border-0"
+                  src={`https://www.youtube.com/embed/${videoId}`}
+                  title="YouTube video player"
+                />
+                <div className="flex flex-row gap-2 my-5 mb-10">
+                <LanguageSelect
+                  value={selectedLanguage}
+                  onValueChange={(value) => {
+                    setSelectedLanguage(value);
+                  }}/>
+                <button 
+                onClick={handleTranslate}
+                className="w-[200px] h-[35px] flex items-center justify-center bg-[#EEB866FF] hover:bg-[#E79924FF] active:bg-[#CE8517FF] disabled:opacity-40 text-white font-opensans text-lg leading-7 rounded-lg transition-colors">
+                  Ai Translator
+                  </button>
+                </div>
+                <div>
+                  <p>{result}</p>
+                </div>
+              </>
+            ) : (
+              <p>No transcript yet</p>
+            )}
+          </div>
         )}
       </div>
     </div>
