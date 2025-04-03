@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --hostname 192.168.122.64",
+    "dev": "next dev --port 3001",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -20,6 +20,7 @@
     "next": "15.2.4",
     "next-themes": "^0.4.6",
     "react": "^19.0.0",
+    "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.1.0",
     "translate": "^3.0.1",
