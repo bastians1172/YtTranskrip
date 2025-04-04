@@ -140,7 +140,7 @@ export async function AiTranslate(content: string, lang: string) {
       }
     }
     console.log("Mulai menerjemahkan ke bahasa:", lang);
-    const chunks = splitTextIntoChunks(content, 250);
+    const chunks = splitTextIntoChunks(content, 100);
 
     const translations = await Promise.all(
       chunks.map(chunk => getGroqChatCompletion(chunk, lang))
@@ -165,7 +165,7 @@ export async function AiTranslate(content: string, lang: string) {
   }
 }
 
-export async function getGroqChatCompletion(content: string, lang: string, retries = 1) {
+export async function getGroqChatCompletion(content: string, lang: string, retries = 0) {
   const groq = createGroqInstance();
   try {
     const response = await groq.chat.completions.create({
