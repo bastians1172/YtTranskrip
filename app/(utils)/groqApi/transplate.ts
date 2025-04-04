@@ -109,15 +109,8 @@ const languages = [
 const regex = /<think>[\s\S]*?<\/think>/g;
 
 // Daftar API key yang bisa digunakan
-const API_KEYS = [
-  "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",
-  "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", 
-  "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",
-  "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",
-  "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",
-  "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",
-  "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"
-];
+const API_KEYS = process.env.GROQ_API_KEYS?.split(',') ?? []
+
 let apiKeyIndex = 0;
 
 function getNextApiKey(): string {
