@@ -42,11 +42,14 @@ export default function Home() {
   const [copiedText, setCopiedText] = useState("Copy Teks");
   const[erroTranslate,setErrorTranslate]=useState(false)
   const [isAiTraslate, setIsAiTranslate] = useState(false);
+
+
+
   const handleGetTranscript = async (e: React.FormEvent<HTMLFormElement>) => {
     setErrorTranslate(false);
     e.preventDefault();
     if (!checkUrl(url)) {
-      setResult("Masukkan URL YouTube yang valid");
+      setResult("Input Valid Url");
       return;
     }
     setLoading(true);
