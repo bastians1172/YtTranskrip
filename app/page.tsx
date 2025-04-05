@@ -105,43 +105,43 @@ export default function Home() {
   };
 
 
-  const handleTranslate = async () => {
-    if (!result) return;
-    setErrorTranslate(false);
-    setIsTranslating(true);
+  // const handleTranslate = async () => {
+  //   if (!result) return;
+  //   setErrorTranslate(false);
+  //   setIsTranslating(true);
   
-    try {
-      const response = await fetch("/api/translate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          content: originalTranscript,
-          lang: selectedLanguage,
-        }),
-      });
+  //   try {
+  //     const response = await fetch("/api/translate", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         content: originalTranscript,
+  //         lang: selectedLanguage,
+  //       }),
+  //     });
   
-      const data = await response.json();
+  //     const data = await response.json();
   
-      if (!response.ok) {
-        console.error("Server error:", data.error || "Unknown error");
-        throw new Error(data.error || "Terjadi kesalahan saat menerjemahkan.");
-      }
+  //     if (!response.ok) {
+  //       console.error("Server error:", data.error || "Unknown error");
+  //       throw new Error(data.error || "Terjadi kesalahan saat menerjemahkan.");
+  //     }
   
-      if (!data.result) {
-        throw new Error("Tidak ada hasil terjemahan.");
-      }
+  //     if (!data.result) {
+  //       throw new Error("Tidak ada hasil terjemahan.");
+  //     }
   
-      setResult(data.result);
-    } catch (error) {
-      setErrorTranslate(true);
-      console.error("Translation error:", error);
-      // Misal kamu punya state setError:
-      // setError(error.message);
+  //     setResult(data.result);
+  //   } catch (error) {
+  //     setErrorTranslate(true);
+  //     console.error("Translation error:", error);
+  //     // Misal kamu punya state setError:
+  //     // setError(error.message);
 
-    } finally {
-      setIsTranslating(false)
-    }
-  };
+  //   } finally {
+  //     setIsTranslating(false)
+  //   }
+  // };
   
 
   
