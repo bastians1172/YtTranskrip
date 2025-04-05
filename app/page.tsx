@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
-import getTranscript from "./getTranscript";
-import { AiTranslate } from "./(utils)/groqApi/transplate";
+import getTranscript from "./api/transcript/getTranscript";
 import LanguageSelect from "./language";
 import Image from "next/image";
 import downloadTranscript from "./downloadTranscript";
@@ -43,7 +42,9 @@ export default function Home() {
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [copiedText, setCopiedText] = useState("Copy Teks");
   const[erroTranslate,setErrorTranslate]=useState(false)
+  const [isAiTraslate, setIsAiTranslate] = useState(false);
   const handleGetTranscript = async (e: React.FormEvent<HTMLFormElement>) => {
+    setErrorTranslate(false);
     e.preventDefault();
     if (!checkUrl(url)) {
       setResult("Masukkan URL YouTube yang valid");
@@ -62,60 +63,19 @@ export default function Home() {
     }
   };
 
-  // const handleTranslate = async () => {
-  //   setResult("Translating... Please wait");
-  //   setIsTranslating(true);
-  //   try {
-  //     const translatedText = await AiTranslate(originalTranscript, selectedLanguage);
-  //     setResult(translatedText);
-  //   } catch (error) {
-  //     console.error("Error translating transcript:", error);
-  //     setResult("Error translating transcript");
-  //   }finally{
-  //     setTimeout(() => {
-  //       setIsTranslating(false);
-  //     },9000)
-  //   }
-  // };
-
-  // const handleTranslate = async () => {
-  //       setResult("Translating... Please wait");
-  //   setIsTranslating(true);
-  //   try {
-  //     const response = await fetch("/api/translate", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         content: result,
-  //         lang: selectedLanguage, // atau pakai dropdown dari `languages` lo
-  //       }),
-  //     });
-    
-  //     const data = await response.json();
-  //     console.log("Hasil terjemahan:", data.result);
-  //           setResult(data.result);
-
-  //   } catch (error) {
-  //     setResult("Couldn't translate Try again Later");
-  //   }
-  //   finally {
-  //     setTimeout(() => {
-  //       setIsTranslating(false);
-  //     }, 5000);
-  //   }
-  // };
-  const handleTranslate = async () => {
+  const handleAITranslate = async () => {
     if (!result) return;
 
     // setResult("Translating... Please wait");
     setIsTranslating(true);
-
+    setIsAiTranslate(true);
+    setErrorTranslate(false);
     try {
-      const response = await fetch("/api/translate", {
+      const response = await fetch("/api/ai-translate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          content: result,
+          content: originalTranscript,
           lang: selectedLanguage, // Use selected language from state
         }),
       });
@@ -134,11 +94,53 @@ export default function Home() {
       setResult(data.result);
     } catch (error) {
       console.error('Translation error:', error);
+      setErrorTranslate(true);
       // setResult("Couldn't translate. Try again later.");
     } finally {
+      setTimeout(() => setIsAiTranslate(false), 5000);
       setTimeout(() => setIsTranslating(false), 5000);
     }
   };
+
+
+  const handleTranslate = async () => {
+    if (!result) return;
+    setErrorTranslate(false);
+    setIsTranslating(true);
+  
+    try {
+      const response = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content: originalTranscript,
+          lang: selectedLanguage,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        console.error("Server error:", data.error || "Unknown error");
+        throw new Error(data.error || "Terjadi kesalahan saat menerjemahkan.");
+      }
+  
+      if (!data.result) {
+        throw new Error("Tidak ada hasil terjemahan.");
+      }
+  
+      setResult(data.result);
+    } catch (error) {
+      setErrorTranslate(true);
+      console.error("Translation error:", error);
+      // Misal kamu punya state setError:
+      // setError(error.message);
+
+    } finally {
+      setIsTranslating(false)
+    }
+  };
+  
 
   
   const handleCopy = async () => {
@@ -242,11 +244,19 @@ export default function Home() {
                     />
                     <button
                     onClick={handleTranslate}
-                    disabled={isTranslating}
+                    disabled={isTranslating || isAiTraslate}
                     className="w-full md:w-[140px] h-[35px] flex items-center justify-center gap-2 bg-[#EEB866FF] hover:bg-[#E79924FF] active:bg-[#CE8517FF] disabled:opacity-40 text-white font-opensans text-lg leading-7 rounded-lg transition-colors"
                     >
-                    <Image src="/aiicon.png" alt="AI icon" width={24} height={24} />
+                    <Image src="/language-translation-svgrepo-com.svg" alt="Translate icon" width={24} height={24} />
                     <span className="text-center">{isTranslating ? 'Translating' : 'Translate'}</span>
+                    </button>
+                    <button
+                    onClick={handleAITranslate}
+                    disabled={isAiTraslate || isTranslating}
+                    className="w-full md:w-[140px] h-[35px] flex items-center justify-center gap-2 bg-[#EEB866FF] hover:bg-[#E79924FF] active:bg-[#CE8517FF] disabled:opacity-40 text-white font-opensans text-lg leading-7 rounded-lg transition-colors"
+                    >
+                    <Image src="/aiicon.png" alt="Translate icon" width={24} height={24} />
+                    <span className="text-center">{isTranslating || isAiTraslate ? 'Translating' : 'AI Translate'}</span>
                     </button>
                   </div>
                   )}
@@ -254,19 +264,19 @@ export default function Home() {
                   <div className="flex flex-col items-center justify-center py-4">
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500 mb-4"></div>
                     <p className="text-center text-lg">Translating your text...</p>
-                    <small className="text-gray-500 italic mt-4">AI translation is still in beta. Results may be inaccurate or take longer to process.</small>
+                    {isAiTraslate && <small className="text-gray-500 italic mt-4">AI translation is still in beta. Results may be inaccurate or take longer to process.</small>}
 
                   </div>
                   ) : (
                     <>
                     {erroTranslate ? (
                       <div className="flex flex-col gap-2">
-                      <p className="text-red-500">Error when translating. Please try again later.</p>
+                      <p className="text-red-500 text-center">Error when translating. Please try again later.</p>
                       </div>
                     ) : (
                       <div className="flex flex-col gap-2">
                       <p className="text-lg leading-relaxed">{result}</p>
-                      <small className="text-gray-500 italic">Note: AI translation may not be 100% accurate</small>
+                      {/* <small className="text-gray-500 italic">Note: AI translation may not be 100% accurate</small> */}
                       </div>
                     )}
                     </>

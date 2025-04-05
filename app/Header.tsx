@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ModeToggle } from "./(utils)/theme-button";
+import { ModeToggle } from "../components/theme-button";
 
 export default function Header() {
   return (

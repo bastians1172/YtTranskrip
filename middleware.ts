@@ -23,5 +23,5 @@ export function middleware(req: Request) {
 }
 
 export const config = {
-  matcher: "/api/:path*", // Middleware hanya aktif di API routes
+  matcher: "/api/ai-translate/:path*", // Middleware hanya aktif di API route ai-translate
 };
