@@ -1,3 +1,4 @@
+"use server"
 // app/api/translate/route.ts
 import { NextRequest } from 'next/server'
 

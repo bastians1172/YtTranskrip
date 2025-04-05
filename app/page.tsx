@@ -8,7 +8,6 @@ import {handleDownloadPDF} from "./pdfDocument";
 
 
 import React from 'react';
-import ReactPDF from '@react-pdf/renderer';
 
 
 
@@ -37,7 +36,7 @@ export default function Home() {
   const [isTranslating, setIsTranslating] = useState(false);
   const [url, setUrl] = useState("");
   const [originalTranscript, setOriginalTranscript] = useState("");
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [copiedText, setCopiedText] = useState("Copy Teks");
@@ -82,7 +81,7 @@ export default function Home() {
 
       if (!response.ok) {
         // throw new Error(`HTTP error! status: ${response.status}`);
-          const errorData = await response.json();
+          // const errorData = await response.json();
           // setResult(errorData.error || "An error occurred during translation");
       }
 
@@ -158,6 +157,7 @@ export default function Home() {
       }, 4000);
       await navigator.clipboard.writeText(result);
     } catch (error) {
+      console.error("Error copying text:", error);
       setCopiedText("Can't Copy");
       setTimeout(() => {
         setCopiedText("Copy Text");
@@ -228,7 +228,7 @@ export default function Home() {
                     <Image src="/download.svg" alt="Download icon" width={24} height={24} />
                     <span>Download</span>
                   </button>
-                  <button onClick={(e) => handleDownloadPDF(result)} className=" px-4 w-full md:w-[190px] h-[35px] flex items-center justify- gap-2 bg-[#EEB866FF] hover:bg-[#E79924FF] active:bg-[#CE8517FF] disabled:opacity-40 text-white font-opensans text-lg leading-7 rounded-lg transition-colors">
+                  <button onClick={() => handleDownloadPDF(result)} className=" px-4 w-full md:w-[190px] h-[35px] flex items-center justify- gap-2 bg-[#EEB866FF] hover:bg-[#E79924FF] active:bg-[#CE8517FF] disabled:opacity-40 text-white font-opensans text-lg leading-7 rounded-lg transition-colors">
                     <Image src="/pdfIco.svg" alt="PDF icon" width={24} height={24} />
                     <span>Download PDF</span>
                   </button>

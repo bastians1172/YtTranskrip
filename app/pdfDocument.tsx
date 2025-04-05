@@ -16,7 +16,7 @@ export const handleDownloadPDF = (result: string) => {
 
     let currentHeight = marginTop;
     let currentPage = 1;
-    let totalPages = Math.ceil((lines.length * lineHeight) / (pageHeight - marginTop - 20));
+    const totalPages = Math.ceil((lines.length * lineHeight) / (pageHeight - marginTop - 20));
 
     const addHeaderAndFooter = () => {
         // Add header
