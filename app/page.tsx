@@ -245,14 +245,14 @@ export default function Home() {
                     value={selectedLanguage}
                     onValueChange={(value) => setSelectedLanguage(value)}
                     />
-                    <button
+                    {/* <button
                     onClick={handleTranslate}
                     disabled={isTranslating || isAiTraslate}
                     className="w-full md:w-[140px] h-[35px] flex items-center justify-center gap-2 bg-[#EEB866FF] hover:bg-[#E79924FF] active:bg-[#CE8517FF] disabled:opacity-40 text-white font-opensans text-lg leading-7 rounded-lg transition-colors"
                     >
                     <Image src="/language-translation-svgrepo-com.svg" alt="Translate icon" width={24} height={24} />
                     <span className="text-center">{isTranslating ? 'Translating' : 'Translate'}</span>
-                    </button>
+                    </button> */}
                     <button
                     onClick={handleAITranslate}
                     disabled={isAiTraslate || isTranslating}

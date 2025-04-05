@@ -29,7 +29,7 @@ export function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
   // Misalnya kita hanya izinkan akses ke root ("/") dan api/ai-translate
-  if (pathname === "/" || pathname.startsWith("/api/ai-translate") || pathname.startsWith("/api/translate")) {
+  if (pathname === "/" || pathname.startsWith("/api/ai-translate") ) {
     return NextResponse.next();
   }
 
