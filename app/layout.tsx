@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     default: 'YouTube Transcript Tool',
     template: '%s | YouTube Transcript Tool'
   },
-  description: 'Generate and download transcripts from YouTube videos easily. Support for multiple languages and formats.',
+  description: 'YouTube Transcript Tool ,Generate and download transcripts from YouTube videos easily. Support for multiple languages and formats.',
   keywords: ['YouTube transcript', 'video transcription', 'subtitle generator', 'YouTube captions', 'transcript downloader', 'video subtitles', 'YouTube video tool','youtube to text','youtube subtitle','youtube transcript generator'],
   formatDetection: {
     email: false,
