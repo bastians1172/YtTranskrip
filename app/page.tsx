@@ -99,8 +99,8 @@ export default function Home() {
       setErrorTranslate(true);
       // setResult("Couldn't translate. Try again later.");
     } finally {
-      setTimeout(() => setIsAiTranslate(false), 5000);
-      setTimeout(() => setIsTranslating(false), 5000);
+      setTimeout(() => setIsAiTranslate(false), 1000);
+      setTimeout(() => setIsTranslating(false), 1000);
     }
   };
 
@@ -287,7 +287,7 @@ export default function Home() {
                 </div>
               </>
             ) : (
-              <p className="text-center">No transcript available</p>
+                <p className="text-center">Enter a YouTube URL to view the transcript</p>
             )}
           </div>
         )}
