@@ -1,3 +1,2 @@
-
-showcase :
-(https://github.com/user-attachments/assets/5aa4c9c2-75b6-42a9-a235-b56c46f532e5)
+# PREVIEW
+![showcas-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/cae3e91a-6c79-4bae-9333-b972a639ff0a)
